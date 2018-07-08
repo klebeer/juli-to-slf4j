@@ -20,7 +20,7 @@
     <groupId>org.gandon.tomcat</groupId>
     <artifactId>juli-to-slf4j</artifactId>
     <version>1.1.2-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>bundle</packaging>
 
     <name>JULI-to-SLF4J Library</name>
     <description>Tomcat JULI-to-SLF4J minimal adapter library</description>
@@ -68,6 +68,7 @@
         <!-- We don't set this as a dependency because our code builds without it,
              but this is the version we support here -->
         <logback.version>1.2.3</logback.version>
+        <maven-bundle-plugin.version>3.5.1</maven-bundle-plugin.version>
     </properties>
 
     <dependencies>
@@ -101,6 +102,26 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${maven-bundle-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Description>${project.description}</Bundle-Description>
+                        <Export-Package>
+                            org.apache.juli.logging.impl
+                        </Export-Package>
+                        <Import-Package>
+                            org.slf4j,
+                            org.slf4j.spi,
+                        </Import-Package>
+
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -127,6 +148,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
